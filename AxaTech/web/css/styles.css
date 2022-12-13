@@ -1,0 +1,97 @@
+body{
+    background: linear-gradient(90deg, #13547a  0%,  #80d0c7  100%);
+}
+header{
+    background-color: #f0ffff;
+}
+.flex-container{
+    display: flex;
+
+    justify-content: space-around;
+}
+.flex-container-2{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px;
+}
+/* PARTE FLEX-ITEM */
+.box2{
+    
+    width: 75%;
+    height: 100%;
+    box-sizing: border-box;
+    text-align: justify;
+    flex-basis: auto;
+}
+.box1{
+    background-color: #ffffff9f;
+    width: 25%;
+    height: 100%;
+    box-sizing: border-box;
+    text-align: justify;
+    flex-basis: auto;
+    text-align: center;
+    color: #000 ;
+    margin-left: 0.5%;
+}
+.box2{
+    background-color: #ffffff3d;
+}
+/*TABLA HORARIO*/
+table{
+    max-width: 95%;
+    margin: 2%;
+}
+.tbody{
+    background-color: #f0fff29d;
+}
+td.finD{
+    background-color: #fc020282;
+}
+td.puent{
+    background-color: #fc51027a;
+}
+td.mes{
+    background-color: #8f8f8fa8;
+}
+/*HORARIO INDICE*/
+.flex-container2{
+    max-width: 95%;
+    margin: 2% 0% 0% 2%;
+    display: flex;
+    background-color: #f0ffff80;
+}
+.texto{
+    margin-left: 2%;
+}
+.festivo{
+    background-color: #fc020282;
+    width: 25px;
+    height: 25px;
+}
+.puente{    
+    background-color: #fc51027a;
+    width: 25px;
+    height: 25px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

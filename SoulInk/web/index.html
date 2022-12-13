@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./img/Soul-sinfondo.png">
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/productos.css">
+    <title>SoulInk</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light ">
+            <img src="./img/Soul.png" width="100" height="100" class="d-inline-block align-top" alt="Logo de SoulInk">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarNav">            
+                    <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="./index.html">SoulInk</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link  " aria-current="page" href="./productos.html">Productos</a>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="flex-container">
+        <div class="flex-item-1">
+            <table class="table">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Tipo de producto</th>
+                        <th scope="col">Marca</th>
+                        <th scope="col">Color</th>
+                        <th scope="col">Precio/unidad</th>
+                        <th scope="col">Cantidad</th>
+                      </tr>
+                </thead>
+                <tbody class="tbody">
+                    <tr>
+                        <td>Tinte</td>
+                        <td>Dinamic</td>
+                        <td>Negro</td>
+                        <td>18'75€</td>
+                        <td>25</td>
+                      </tr>
+                      <tr>
+                        <td>Tinte</td>
+                        <td>Viking-IMK</td>
+                        <td>Rojo</td>
+                        <td>22'85€</td>
+                        <td>15</td>
+                      </tr>
+                      <tr>
+                        <td>Tinte</td>
+                        <td>Ink Extreme</td>
+                        <td>Azul</td>
+                        <td>13'95€</td>
+                        <td>43</td>
+                      </tr>
+                      <tr>
+                        <td>Tinte</td>
+                        <td>Ink Extreme</td>
+                        <td>Verde</td>
+                        <td>19'95€</td>
+                        <td>11</td>
+                      </tr>
+                </tbody>
+              </table>
+        </div>
+        <div class="flex-item-2">
+            <p></p>
+            <p>
+                <button id="btnRest" class="btn btn-primary2">Tabla general</button>
+            </p>
+            <p>
+                <label> Buscar por nombre: </label> <input type="text" id="inNom">
+                <button id="btnBuscarNom" class="btn btn-primary">Buscar</button>
+            </p>
+            <p>
+                <label> Buscar por marcas: </label> <input type="text" id="inMarc" >
+                <button id="btnBuscarMarc" class="btn btn-primary">Buscar</button>
+            </p>
+            <p>
+                <label> Buscar por precio: </label> <input type="text" id="inPrec">
+                <!-- <input type="text" id="PrecMin" placeholder="Precio minimo">
+                <input type="text" id="PrecMax" placeholder="Precio maximo">
+                <button id="btnAVGPrec" class="btn btn-primary">Buscar avg</button> -->
+                <button id="btnBuscarPrec" class="btn btn-primary">Buscar</button>
+            </p>
+        </div>
+    </div>
+    <footer>
+
+    </footer>
+    <script src="./js/jsFunctions.js"></script>
+    <script src="./js/jquery-3.5.1.min.js"></script>
+    <script  src="./bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
