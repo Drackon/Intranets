@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-12-2022 a las 10:15:04
+-- Tiempo de generación: 15-12-2022 a las 08:25:03
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.1.12
 
@@ -20,50 +20,59 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `axausuarios`
 --
+CREATE DATABASE IF NOT EXISTS `axausuarios` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `axausuarios`;
 
 DELIMITER $$
 --
 -- Procedimientos
 --
+DROP PROCEDURE IF EXISTS `BuscMarca`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `BuscMarca` (IN `pmarca` VARCHAR(200))   BEGIN 
 	select Nombre, Marca, Precio, Cantidad from productos WHERE Marca = pmarca ;
 	END$$
 
+DROP PROCEDURE IF EXISTS `BuscNombre`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `BuscNombre` (IN `pnombre` VARCHAR(200))   BEGIN 
 	select Nombre, Marca, Precio, Cantidad from productos WHERE Nombre= pnombre ;
 	END$$
 
+DROP PROCEDURE IF EXISTS `BuscPrecio`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `BuscPrecio` (IN `pprecio` INT)   BEGIN 
 	select Nombre, Marca, Precio, Cantidad from productos WHERE Precio = pprecio ;
 	END$$
 
+DROP PROCEDURE IF EXISTS `insertar`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `insertar` (IN `pNombre` VARCHAR(200), IN `pMarca` VARCHAR(200), IN `pPrecio` INT, IN `pCantidad` INT)   BEGIN 
 	INSERT INTO productos (Nombre, Marca, Precio, Cantidad) VALUES (pNombre,pMarca,pPrecio,pCantidad);
 	END$$
 
+DROP PROCEDURE IF EXISTS `subida`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `subida` (IN `porcentaje` INT, IN `pNombre` VARCHAR(200))   BEGIN
-		UPDATE productos SET Precio = (Precio + (Precio*porcentaje)/100) where nombre = pNombre ;
-	END$$
+UPDATE productos SET productos.Precio = (productos.Precio + (productos.Precio*porcentaje)/100) 
+where productos.nombre = pNombre ;
+END$$
 
 --
 -- Funciones
 --
-CREATE DEFINER=`root`@`localhost` FUNCTION `CamPrecio` (`precio` INTEGER) RETURNS DOUBLE DETERMINISTIC BEGIN
+DROP FUNCTION IF EXISTS `CamPrecio`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `CamPrecio` (`precio` INT) RETURNS DOUBLE DETERMINISTIC BEGIN
        	declare result varchar(10);
-        IF productos.precio > productos.old.precio THEN
+        IF productos.precio > precios_viejo.precio THEN
 			set result = 'Subida';
 		else
 			set result = 'Bajada';
 		END IF;
         RETURN result;
-        INSERT INTO cambio_precios (Cambio) VALUES (result);
     END$$
 
+DROP FUNCTION IF EXISTS `DifPrecio`$$
 CREATE DEFINER=`root`@`localhost` FUNCTION `DifPrecio` (`precio` INTEGER) RETURNS DOUBLE DETERMINISTIC BEGIN
        	declare a int;
-        set a = productos.precio - productos.old.precio;
+        set a = productos.precio - precios_viejos.precio;
         RETURN a;
-        INSERT INTO cambio_precios (Diferencia) VALUES (a);
+        
     END$$
 
 DELIMITER ;
@@ -74,6 +83,7 @@ DELIMITER ;
 -- Estructura Stand-in para la vista `busqueda_genreal`
 -- (Véase abajo para la vista actual)
 --
+DROP VIEW IF EXISTS `busqueda_genreal`;
 CREATE TABLE `busqueda_genreal` (
 `idProducto` int(11)
 ,`Nombre` varchar(255)
@@ -88,13 +98,37 @@ CREATE TABLE `busqueda_genreal` (
 -- Estructura de tabla para la tabla `cambio_precios`
 --
 
+DROP TABLE IF EXISTS `cambio_precios`;
 CREATE TABLE `cambio_precios` (
   `idProducto` int(11) NOT NULL,
   `Nombre` varchar(255) NOT NULL,
   `Diferencia` int(11) NOT NULL,
   `Cambio` varchar(255) DEFAULT NULL,
-  `Data` int(11) DEFAULT NULL
+  `Data` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `precios_viejos`
+--
+
+DROP TABLE IF EXISTS `precios_viejos`;
+CREATE TABLE `precios_viejos` (
+  `idProducto` int(11) NOT NULL,
+  `Nombre` varchar(255) NOT NULL,
+  `Precio` int(11) NOT NULL,
+  `Fecha` date DEFAULT NULL,
+  `cambio` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `precios_viejos`
+--
+
+INSERT INTO `precios_viejos` (`idProducto`, `Nombre`, `Precio`, `Fecha`, `cambio`) VALUES
+(18, 'iphone 13', 879, '2022-12-13', 0),
+(19, 'iphone 13', 0, NULL, -3);
 
 -- --------------------------------------------------------
 
@@ -102,6 +136,7 @@ CREATE TABLE `cambio_precios` (
 -- Estructura de tabla para la tabla `productos`
 --
 
+DROP TABLE IF EXISTS `productos`;
 CREATE TABLE `productos` (
   `idProducto` int(11) NOT NULL,
   `Nombre` varchar(255) NOT NULL,
@@ -117,22 +152,31 @@ CREATE TABLE `productos` (
 INSERT INTO `productos` (`idProducto`, `Nombre`, `Marca`, `Precio`, `Cantidad`) VALUES
 (3, 'Samsung galaxy s8', 'Samsung', 289, 15),
 (4, 'Samsung galaxy s20', 'Samsung', 130, 30),
-(6, 'Iphone 14', 'Iphone', 1469, 5),
+(6, 'Iphone 14', 'Iphone', 1466, 5),
 (7, 'Honor Magic 4 Lite', 'LG', 249, 11),
 (8, 'LG G7 ThinQ', 'LG', 259, 18),
 (9, 'Xiaomi Note 11', 'Xiaomi', 180, 16),
 (10, 'Xiaomi 12T Pro', 'Xiaomi', 1000, 8),
 (11, 'Redmi Note 11 Pro+', 'Xiaomi', 400, 8),
 (12, 'Xiaomi Redmi note 9', 'Xiaomi', 230, 11),
-(22, 'iphone 13', 'iphone', 806, 3);
+(22, 'iphone 13', 'iphone', 853, 3);
 
 --
 -- Disparadores `productos`
 --
+DROP TRIGGER IF EXISTS `delete_data`;
 DELIMITER $$
 CREATE TRIGGER `delete_data` BEFORE DELETE ON `productos` FOR EACH ROW BEGIN
     INSERT INTO productos_eliminados (Nombre, Marca, Data)
     VALUES (old.Nombre, old.Marca, now());
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `save_prec`;
+DELIMITER $$
+CREATE TRIGGER `save_prec` BEFORE UPDATE ON `productos` FOR EACH ROW BEGIN
+    INSERT INTO precios_viejos (Nombre, Precio, Fecha)
+    VALUES (old.Nombre, old.Precio, now());
 END
 $$
 DELIMITER ;
@@ -143,11 +187,12 @@ DELIMITER ;
 -- Estructura de tabla para la tabla `productos_eliminados`
 --
 
+DROP TABLE IF EXISTS `productos_eliminados`;
 CREATE TABLE `productos_eliminados` (
   `id` int(11) NOT NULL,
   `Nombre` varchar(255) NOT NULL,
   `Marca` varchar(255) NOT NULL,
-  `Data` datetime NOT NULL
+  `Data` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -155,9 +200,9 @@ CREATE TABLE `productos_eliminados` (
 --
 
 INSERT INTO `productos_eliminados` (`id`, `Nombre`, `Marca`, `Data`) VALUES
-(1, 'Iphone 13', 'Iphone', '2022-12-07 08:23:15'),
-(3, 'Iphone 13', 'Iphone', '2022-12-07 09:16:21'),
-(4, 'Iphone 11', 'Iphone', '2022-12-07 09:16:52');
+(1, 'Iphone 13', 'Iphone', '2022-12-07'),
+(3, 'Iphone 13', 'Iphone', '2022-12-07'),
+(4, 'Iphone 11', 'Iphone', '2022-12-07');
 
 -- --------------------------------------------------------
 
@@ -165,6 +210,7 @@ INSERT INTO `productos_eliminados` (`id`, `Nombre`, `Marca`, `Data`) VALUES
 -- Estructura de tabla para la tabla `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
@@ -191,6 +237,7 @@ INSERT INTO `users` (`id`, `username`, `password`) VALUES
 --
 DROP TABLE IF EXISTS `busqueda_genreal`;
 
+DROP VIEW IF EXISTS `busqueda_genreal`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `busqueda_genreal`  AS SELECT `productos`.`idProducto` AS `idProducto`, `productos`.`Nombre` AS `Nombre`, `productos`.`Marca` AS `Marca`, `productos`.`Precio` AS `Precio`, `productos`.`Cantidad` AS `Cantidad` FROM `productos``productos`  ;
 
 --
@@ -201,6 +248,12 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- Indices de la tabla `cambio_precios`
 --
 ALTER TABLE `cambio_precios`
+  ADD PRIMARY KEY (`idProducto`);
+
+--
+-- Indices de la tabla `precios_viejos`
+--
+ALTER TABLE `precios_viejos`
   ADD PRIMARY KEY (`idProducto`);
 
 --
@@ -232,6 +285,12 @@ ALTER TABLE `cambio_precios`
   MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `precios_viejos`
+--
+ALTER TABLE `precios_viejos`
+  MODIFY `idProducto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
@@ -247,3 +306,15 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON *.* TO `crud`@`localhost` IDENTIFIED BY PASSWORD '*B37ACB9927C1F3B520BBF976386EAB76A08F3367'; -- Password = Admin123
+
+GRANT EXECUTE ON PROCEDURE `axausuarios`.`buscprecio` TO `crud`@`localhost`;
+
+GRANT EXECUTE ON PROCEDURE `axausuarios`.`buscmarca` TO `crud`@`localhost`;
+
+GRANT EXECUTE ON PROCEDURE `axausuarios`.`subida` TO `crud`@`localhost`;
+
+GRANT EXECUTE ON PROCEDURE `axausuarios`.`insertar` TO `crud`@`localhost`;
+
+GRANT EXECUTE ON PROCEDURE `axausuarios`.`buscnombre` TO `crud`@`localhost`;
